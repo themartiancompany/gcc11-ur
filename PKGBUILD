@@ -1,4 +1,7 @@
+# SPDX-License-Identifier: AGPL-3.0
+#
 # Maintainer: Pellegrino Prevete <pellegrinoprevete at gmail dot com>
+# Maintainer: Truocolo <truocolo@aol.com>
 # Contributor: elliotwutingfeng
 # Contributor: Frederik Schwan <freswa at archlinux dot org>
 # Contributor: Jonathon Fernyhough <jonathon+m2x+dev>
@@ -265,28 +268,53 @@ package_gcc11() {
   make -C $CHOST/libsanitizer/asan DESTDIR="$pkgdir" install-nodist_toolexeclibHEADERS
   make -C $CHOST/libsanitizer/tsan DESTDIR="$pkgdir" install-nodist_toolexeclibHEADERS
   make -C $CHOST/libsanitizer/lsan DESTDIR="$pkgdir" install-nodist_toolexeclibHEADERS
-
-  make -C libcpp DESTDIR="$pkgdir" install
-  make -C gcc DESTDIR="$pkgdir" install-po
-
+  make \
+    -C \
+      libcpp \
+    DESTDIR="${pkgdir}" \
+    install
+  make \
+    -C \
+      gcc \
+    DESTDIR="${pkgdir}" \
+    install-po
   # many packages expect this symlink
-  ln -s gcc-${_majorver} "$pkgdir"/usr/bin/cc-${_majorver}
-
-  # POSIX conformance launcher scripts for c89 and c99
-  install -Dm755 "$srcdir/c89" "$pkgdir/usr/bin/c89-${_majorver}"
-  install -Dm755 "$srcdir/c99" "$pkgdir/usr/bin/c99-${_majorver}"
-
+  ln \
+    -s \
+    "gcc-${_majorver}" \
+    "${pkgdir}/usr/bin/cc-${_majorver}"
+  # POSIX conformance launcher
+  # scripts for c89 and c99
+  install \
+    -Dm755 \
+    "${srcdir}/c89" \
+    "${pkgdir}/usr/bin/c89-${_majorver}"
+  install \
+    -Dm755 \
+    "${srcdir}/c99" \
+    "${pkgdir}/usr/bin/c99-${_majorver}"
   # byte-compile python libraries
-  python -m compileall "$pkgdir/usr/share/gcc-${pkgver%%+*}/"
-  python -O -m compileall "$pkgdir/usr/share/gcc-${pkgver%%+*}/"
-
+  python \
+    -m \
+      compileall \
+    "${pkgdir}/usr/share/gcc-${pkgver%%+*}/"
+  python \
+    -O \
+    -m \
+      compileall \
+    "${pkgdir}/usr/share/gcc-${pkgver%%+*}/"
   # Install Runtime Library Exception
-  install -d "$pkgdir/usr/share/licenses/$pkgname/"
-  ln -s /usr/share/licenses/${pkgbase}-libs/RUNTIME.LIBRARY.EXCEPTION \
-    "$pkgdir/usr/share/licenses/$pkgname/"
-
+  install \
+    -d \
+    "${pkgdir}/usr/share/licenses/${pkgname}/"
+  ln \
+    -s \
+    "/usr/share/licenses/${pkgbase}-libs/RUNTIME.LIBRARY.EXCEPTION" \
+    "$pkgdir/usr/share/licenses/${pkgname}/"
   # Remove conflicting files
-  rm -rf "$pkgdir"/usr/share/locale
+  rm \
+    -rf \
+    "$pkgdir"/usr/share/locale
 }
 
 package_gcc11-fortran() {
@@ -295,19 +323,44 @@ package_gcc11-fortran() {
     "${pkgbase}=$pkgver-$pkgrel"
     # libisl.so
   )
-  provides=("${_pkgbase}-fortran=${pkgver}")
-
-  cd gcc-build
-  make -C $CHOST/libgfortran DESTDIR="$pkgdir" install-cafexeclibLTLIBRARIES \
+  provides=(
+    "${_pkgbase}-fortran=${pkgver}"
+  )
+  cd \
+    gcc-build
+  make \
+    -C \
+    "${CHOST}/libgfortran" \
+    DESTDIR="${pkgdir}" \
+    install-cafexeclibLTLIBRARIES \
     install-{toolexeclibDATA,nodist_fincludeHEADERS,gfor_cHEADERS}
-  make -C $CHOST/libgomp DESTDIR="$pkgdir" install-nodist_fincludeHEADERS
-  make -C gcc DESTDIR="$pkgdir" fortran.install-common
-  install -Dm755 gcc/f951 "$pkgdir/${_libdir}/f951"
-
-  ln -s gfortran-${_majorver} "$pkgdir/usr/bin/f95-${_majorver}"
+  make \
+    -C \
+      "${CHOST}/libgomp" \
+    DESTDIR="${pkgdir}" \
+    install-nodist_fincludeHEADERS
+  make \
+    -C \
+      gcc \
+    DESTDIR="${pkgdir}" \
+    fortran.install-common
+  install \
+    -Dm755 \
+    gcc/f951 \
+    "${pkgdir}/${_libdir}/f951"
+  ln \
+    -s \
+    "gfortran-${_majorver}" \
+    "$pkgdir/usr/bin/f95-${_majorver}"
 
   # Install Runtime Library Exception
-  install -d "$pkgdir/usr/share/licenses/$pkgname/"
-  ln -s /usr/share/licenses/${pkgbase}-libs/RUNTIME.LIBRARY.EXCEPTION \
+  install \
+    -d \
+    "${pkgdir}/usr/share/licenses/${pkgname}"
+  ln \
+    -s \
+    "/usr/share/licenses/${pkgbase}-libs/RUNTIME.LIBRARY.EXCEPTION" \
     "$pkgdir/usr/share/licenses/$pkgname/"
 }
+
+# vim:set sw=2 sts=-1 et:
