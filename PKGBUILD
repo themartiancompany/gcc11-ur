@@ -20,7 +20,11 @@ _majorver=${pkgver%%.*}
 _islver=0.24
 pkgrel=1
 pkgdesc='The GNU Compiler Collection (11.x.x)'
-arch=(x86_64)
+arch=(
+  x86_64
+  arm
+  aarch64
+)
 license=(GPL LGPL FDL custom)
 url='https://gcc.gnu.org'
 makedepends=(
